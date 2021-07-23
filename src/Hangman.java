@@ -1,64 +1,65 @@
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
+import java.io.File;
+import java.util.List;
 
 public class Hangman {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner fileScanner = new Scanner(new File("words.txt"));
         Scanner inputDevice = new Scanner(System.in);
-        String wordToGuess;
-        int wordLength;
-        int wordToGuessLength;
-        int position;
-        int livesLost = 0;
-        int totalLives = 7;
-        int lettersRemaining;
-        boolean guessInWord;
-        char guess;
-        StringBuffer sb = new StringBuffer();
-        StringBuffer previouslyGuessChar;
-        StringBuffer buffer = new StringBuffer();
 
-        String[] wordBank = new String[]{"watermelon", "waterfall", "candlestick", "courtyard", "notebook", "bicycle", "mountain",
-                                        "firework", "computer", "python", "tomato", "hockey"};
-
-        System.out.println("Welcome to Hangman");
-
-        wordToGuess = wordBank[(int) (Math.random() * wordBank.length)];
-        wordToGuessLength = wordToGuess.length();
-        System.out.println("Your word has " + wordToGuessLength + " Letters");
-        lettersRemaining = wordToGuessLength;
-
-        for (position = 0; position < wordToGuessLength; position++){
-            sb.append("_ ");
+        List<String> wordBank = new ArrayList<>();
+        while (fileScanner.hasNext()){
+           wordBank.add(fileScanner.nextLine());
         }
-        System.out.println(sb.toString());
 
-        while (lettersRemaining > 0 && livesLost < 7){
-            System.out.println("\nPlease Guess a Letter>>");
-            guess = inputDevice.next().charAt(0);
-            guessInWord = (wordToGuess.indexOf(guess)) != -1;
+        Random rand = new Random();
+        String wordToGuess = wordBank.get(rand.nextInt(wordBank.size()));
 
-            if (guessInWord == false){
-                livesLost++;
-                System.out.print("Incorrect Guess! " + (totalLives - livesLost) + " Lives left");
+        System.out.println(wordToGuess);
+
+        List<Character> playerGuesses = new ArrayList<>();
+
+        displayWord(wordToGuess, playerGuesses);
+
+        System.out.println("Please Guess a Letter>>");
+        String letterGuessed = inputDevice.nextLine();
+        playerGuesses.add(letterGuessed.charAt(0));
+        displayWord(wordToGuess, playerGuesses);
+
+        while (true) {
+            getPlayerGuess(inputDevice, wordToGuess, playerGuesses);
+            if(displayWord(wordToGuess, playerGuesses)){
+                break;
+            }
+        }
+        System.out.println("Correctly Guessed word, You Win!");
+
+
+
+
+
+    }
+    private static boolean displayWord(String wordToGuess, List<Character> playerGuesses){
+        int correctGuesses = 0;
+        for(int i = 0; i < wordToGuess.length(); i++){
+            if (playerGuesses.contains(wordToGuess.charAt(i))){
+                System.out.print(wordToGuess.charAt(i));
+                correctGuesses ++;
             }
             else{
-                System.out.println("Correct Guess");
-                for(position = 0; position < wordToGuessLength; position++){
-                    if( wordToGuess.charAt(position) == guess){
-                        System.out.print(guess);
-                        lettersRemaining --;
-                    }
-                    else {
-                        System.out.print("_ ");
-                    }
-                }
+                System.out.print("_");
             }
-            System.out.println();
-            previouslyGuessChar = buffer.append(guess);
-            System.out.print("Previously guessed letters: " + previouslyGuessChar + "\nLetters remaining: "+ lettersRemaining);
-
-
-
         }
+        System.out.println();
+        return (wordToGuess.length() == correctGuesses);
+    }
+    private static void getPlayerGuess(Scanner inputDevice, String wordToGuess, List<Character> playerGuesses){
+        System.out.println("Please Guess a Letter>>");
+        String letterGuessed = inputDevice.nextLine();
+        playerGuesses.add(letterGuessed.charAt(0));
+
     }
 }
