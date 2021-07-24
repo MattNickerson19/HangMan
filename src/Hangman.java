@@ -18,8 +18,6 @@ public class Hangman {
         Random rand = new Random();
         String wordToGuess = wordBank.get(rand.nextInt(wordBank.size()));
 
-        System.out.println(wordToGuess);
-
         List<Character> playerGuesses = new ArrayList<>();
 
         displayWord(wordToGuess, playerGuesses);
@@ -29,17 +27,22 @@ public class Hangman {
         playerGuesses.add(letterGuessed.charAt(0));
         displayWord(wordToGuess, playerGuesses);
 
+        int incorrectGuesses = 0;
         while (true) {
-            getPlayerGuess(inputDevice, wordToGuess, playerGuesses);
+            printOutMan(incorrectGuesses);
+
+            if (incorrectGuesses >= 6){
+                System.out.println("You Lose!");
+                break;
+            }
+            if (!getPlayerGuess(inputDevice, wordToGuess, playerGuesses)){
+                incorrectGuesses++;
+            }
             if(displayWord(wordToGuess, playerGuesses)){
                 break;
             }
         }
         System.out.println("Correctly Guessed word, You Win!");
-
-
-
-
 
     }
     private static boolean displayWord(String wordToGuess, List<Character> playerGuesses){
@@ -54,12 +57,41 @@ public class Hangman {
             }
         }
         System.out.println();
+
         return (wordToGuess.length() == correctGuesses);
     }
-    private static void getPlayerGuess(Scanner inputDevice, String wordToGuess, List<Character> playerGuesses){
+    private static boolean getPlayerGuess(Scanner inputDevice, String wordToGuess, List<Character> playerGuesses){
         System.out.println("Please Guess a Letter>>");
         String letterGuessed = inputDevice.nextLine();
         playerGuesses.add(letterGuessed.charAt(0));
 
+        return (wordToGuess.contains(letterGuessed));
+    }
+
+    private static void printOutMan(Integer incorrectGuesses){
+        System.out.println(" --------");
+        System.out.println(" |      |");
+        if (incorrectGuesses >= 1){
+            System.out.println(" O");
+        }
+        if (incorrectGuesses >= 2) {
+            System.out.print("\\ ");
+            if (incorrectGuesses >= 3) {
+                System.out.println("/");
+            } else {
+                System.out.println("");
+            }
+        }
+        if (incorrectGuesses >= 4){
+            System.out.println(" |");
+        }
+        if (incorrectGuesses >= 5) {
+            System.out.print("/ ");
+            if (incorrectGuesses >= 6) {
+                System.out.println("\\");
+            } else {
+                System.out.println("");
+            }
+        }
     }
 }
