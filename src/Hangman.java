@@ -27,9 +27,11 @@ public class Hangman {
         playerGuesses.add(letterGuessed.charAt(0));
         displayWord(wordToGuess, playerGuesses);
 
+
         int incorrectGuesses = 0;
         while (true) {
             printOutMan(incorrectGuesses);
+            System.out.println("Letters Guessed: " + playerGuesses);
 
             if (incorrectGuesses >= 6){
                 System.out.println("You Lose!");
@@ -39,10 +41,11 @@ public class Hangman {
                 incorrectGuesses++;
             }
             if(displayWord(wordToGuess, playerGuesses)){
+                System.out.println("Correctly Guessed word, You Win!");
                 break;
             }
         }
-        System.out.println("Correctly Guessed word, You Win!");
+
 
     }
     private static boolean displayWord(String wordToGuess, List<Character> playerGuesses){
@@ -57,6 +60,8 @@ public class Hangman {
             }
         }
         System.out.println();
+
+
 
         return (wordToGuess.length() == correctGuesses);
     }

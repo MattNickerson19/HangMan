@@ -13,4 +13,7 @@ birthday
 python
 sample
 accident
+tornado
+thursday
+flower
 
